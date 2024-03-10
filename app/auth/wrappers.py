@@ -14,6 +14,13 @@ def verify_password(username, password):
         if check_password_hash(user.password, password):
             return user
         
+@basic_auth.error_handler
+def basic_auth_error(status):
+    return {
+        "status": "not ok",
+        "message": "Invalid username/password"
+        }, status
+        
 @jwt.user_lookup_loader
 def user_lookup_callback(_jwt_header, jwt_data):
     user_id = jwt_data['sub']

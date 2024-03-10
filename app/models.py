@@ -3,30 +3,12 @@ from werkzeug.security import generate_password_hash
 from sqlalchemy import desc, func
 from app import db
 from uuid import uuid4
-from .helpers.send_notifications import send_notifications
 
 subscription = db.Table('subscription',
     db.Column('user_id', db.String, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False, primary_key=True),
     db.Column('product_id', db.String, db.ForeignKey('product.id', ondelete='CASCADE'), nullable=False, primary_key=True),
     db.Column('subscription_date', db.DateTime, nullable=False, default=datetime.utcnow()),
     )
-
-class Price(db.Model):
-    __tablename__ = 'price'
-    id = db.Column(db.Integer, primary_key=True)
-    product_id = db.Column(db.String, db.ForeignKey('product.id', ondelete='CASCADE'), nullable=False)
-    timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
-    amount = db.Column(db.Numeric)
-
-    def __init__(self, product_id, amount):
-        self.product_id = product_id
-        self.amount = amount
-
-        send_notifications(product_id, amount)
-
-    def update_timestamp(self):
-        self.timestamp = datetime.utcnow()
-
 class Product(db.Model):
     __tablename__ = 'product'
     id = db.Column(db.String, primary_key=True)
@@ -63,7 +45,26 @@ class Product(db.Model):
             'current_price': '',
             'lowest_recorded_price': '',
         }
-    
+
+from .helpers.send_notifications import send_notifications
+
+class Price(db.Model):
+    __tablename__ = 'price'
+    id = db.Column(db.Integer, primary_key=True)
+    product_id = db.Column(db.String, db.ForeignKey('product.id', ondelete='CASCADE'), nullable=False)
+    timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
+    amount = db.Column(db.Numeric)
+
+    def __init__(self, product_id, amount):
+        self.product_id = product_id
+        self.amount = amount
+
+        send_notifications(product_id, amount)
+
+    def update_timestamp(self):
+        self.timestamp = datetime.utcnow()
+
+
 
 
 class User(db.Model):
@@ -128,7 +129,8 @@ class User(db.Model):
             'phone': self.phone,
             'date_created': self.date_created,
             'subscription_count': len(self.subscriptions),
-            'notify_on_drop_only': self.notify_on_drop_only
+            'notify_on_drop_only': self.notify_on_drop_only,
+            'notification_method': self.notification_method
         }
         
 

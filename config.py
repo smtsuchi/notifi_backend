@@ -12,3 +12,5 @@ class Config():
     JWT_TOKEN_LOCATION = ["cookies"]
     JWT_SECRET_KEY = os.environ.get("SECRET_KEY")
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=1)
+    JWT_ERROR_MESSAGE_KEY = "message"
+    CORS_SUPPORTS_CREDENTIALS=True

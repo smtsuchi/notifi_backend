@@ -5,8 +5,8 @@ from ..models import User
 from .wrappers import basic_auth
 from flask_jwt_extended import create_access_token, set_access_cookies, unset_jwt_cookies, jwt_required
 
-@auth.post('/user/create')
-def create_user():
+@auth.post('/signup')
+def signup_user():
     data = request.json
     username = data['username']
     password = data['password']
@@ -37,7 +37,7 @@ def create_user():
     }, 201
 
 
-@auth.post('/user/login')
+@auth.post('/login')
 @basic_auth.login_required
 def login_user():
     user = basic_auth.current_user()
@@ -50,12 +50,12 @@ def login_user():
     set_access_cookies(response, access_token)
     return response, 200
 
-@auth.post('/user/logout')
+@auth.post('/logout')
 @jwt_required()
 def logout_user():
-    response = {
+    response = jsonify({
         'status': 'ok',
         'message': "Successfully logged out."
-    }
+    })
     unset_jwt_cookies(response)
     return response, 200
