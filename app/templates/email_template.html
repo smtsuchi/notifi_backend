@@ -1,0 +1,22 @@
+<div style="text-align: center;">
+    <p>Here is the price update for the product:</p>
+    <h3><b>{{ product.product_name }}</b></h3>
+    <img
+        style="height: 220px; width: 220px; object-fit: contain;"
+        src="{{ product.image_url }}"
+        alt="{{ product.product_name }}"
+    >
+    <p>The price went 
+        {% if new_price > old_price %}
+            <span style="color: #cc0000;">
+                <b>UP</b>
+            </span>
+        {% else %}
+            <span style="color: #598C58;">
+                <b>DOWN</b>
+            </span>
+        {% endif %}
+        !
+    </p>
+    <p>From <b>${{ old_price }}</b> to <b>${{ new_price }}</b>.</p>
+</div>
