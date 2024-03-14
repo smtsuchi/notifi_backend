@@ -106,7 +106,7 @@ def edit_profile():
     fields = [('username', User.username), ('email', User.email), ('phone', User.phone)]
     for field, attr in fields:
         if getattr(user, field) != data[field]:
-            user = User.query.filter_by(attr==data[field]).first()
+            user = User.query.filter(attr==data[field]).first()
             if user:
                 return {
                 'status': 'not ok',
