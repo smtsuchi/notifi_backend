@@ -160,7 +160,7 @@ def send_emails():
         db.session.add(price)
         if current_price != product_details['price']:
             send_notifications(product, current_price, price)
-        print('FAILED': failed)
+        print('FAILED', failed)
     return {
         'status': 'ok',
         'message': 'Successfully manually triggered and sent emails.'
