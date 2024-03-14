@@ -38,7 +38,7 @@ def get_product_info_from_url(url):
                 'url': url,
                 'image_url': image,
                 'description': description,
-            }
+            }, 200
         return error
     except:
         return error

@@ -16,8 +16,9 @@ def subscribe():
 
     url = data['url']
     product_details = get_product_info_from_url(url)
-    if product_details.get('status') == 'not ok':
+    if product_details[0].get('status') == 'not ok':
         return product_details
+    product_details = product_details[0]
     product = Product.query.filter_by(url=url).first()
 
     if not product:
@@ -147,13 +148,19 @@ def get_prices_by_product_ids(product_id):
 @api.post('/send/emails')
 def send_emails():
     products = Product.query.all()
+    failed = []
     for product in products:
         product_details = get_product_info_from_url(product.url)
+        if product_details[0].get('status') == 'not ok':
+            failed.append(product.url)
+            continue
+        product_details = product_details[0]
         current_price = product.get_current_price()
         price = Price(product.id, product_details['price'])
         db.session.add(price)
         if current_price != product_details['price']:
             send_notifications(product, current_price, price)
+        print('FAILED': failed)
     return {
         'status': 'ok',
         'message': 'Successfully manually triggered and sent emails.'
