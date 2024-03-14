@@ -120,7 +120,7 @@ def edit_profile():
         'user': user.to_dict()
     }, 200
 
-@api.get('/products/prices')
+@api.post('/products/prices')
 @jwt_required()
 def batch_get_prices_by_product_ids():
     data = request.json
@@ -133,6 +133,16 @@ def batch_get_prices_by_product_ids():
         'status': 'ok',
         'message': 'Successfully retrived prices.',
         'data': output
+    }
+
+@api.get('/products/prices/<product_id>')
+@jwt_required()
+def get_prices_by_product_ids(product_id):
+    product = Product.query.get(product_id)
+    return {
+        'status': 'ok',
+        'message': 'Successfully retrived prices.',
+        'data': product.get_prices()
     }
 
 @api.post('/send/emails')
