@@ -1,6 +1,6 @@
 from . import api
 from app import db
-from ..models import Price, Product, Subscription
+from ..models import Price, Product, Subscription, User
 from flask import request
 from flask_jwt_extended import jwt_required, get_current_user
 from ..helpers.web_scrapers import get_product_info_from_url
@@ -95,6 +95,46 @@ def update_notify_on_drop_only():
         'data': ''
     }
 
+@api.put('/user/profile')
+@jwt_required()
+def edit_profile():
+    user = get_current_user()
+    data = request.json
+    user = User.query.filter_by(email=data['email']).first()
+    if user:
+        return {
+        'status': 'not ok',
+        'message': 'That email is already taken.',
+    }, 400
+    user = User.query.filter_by(phone=data['phone']).first()
+    if user:
+        return {
+        'status': 'not ok',
+        'message': 'That phone number is already taken.',
+    }, 400
+    user.edit_profile(data)
+    db.session.commit()
+    return {
+        'status': 'ok',
+        'message': 'Successfully updated profile.',
+        'user': user.to_dict()
+    }, 200
+
+@api.get('/products/prices')
+@jwt_required()
+def batch_get_prices_by_product_ids():
+    data = request.json
+    product_ids = data['product_ids']
+    output = {}
+    for product_id in product_ids:
+        product = Product.query.get(product_id)
+        output[product_id] = product.get_prices()    
+    return {
+        'status': 'ok',
+        'message': 'Successfully retrived prices.',
+        'data': output
+    }
+
 @api.post('/send/emails')
 def send_emails():
     products = Product.query.all()
@@ -107,7 +147,7 @@ def send_emails():
             send_notifications(product, current_price, price)
     return {
         'status': 'ok',
-        'message': 'Successfully manually triggered and sent emails.
+        'message': 'Successfully manually triggered and sent emails.'
     }
 
 def check_price(url):

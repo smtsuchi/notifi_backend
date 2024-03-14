@@ -29,7 +29,7 @@ class Subscription(db.Model):
         }
     
     def cancel(self):
-        self.cancelled_date = datetime.utcnow()
+        self.cancelled_date = datetime.now(datetime.UTC)
 
 class Product(db.Model):
     __tablename__ = 'product'
@@ -48,6 +48,10 @@ class Product(db.Model):
         self.product_name = product_name
         self.image_url = image_url
         self.description = description
+    
+    def get_prices(self):
+        prices =  self.prices.order_by(desc(Price.timestamp)).all()
+        return [p.to_dict() for p in prices]
 
     def get_subscriber_count(self):
         return len(self.subscribers)
@@ -100,6 +104,13 @@ class Price(db.Model):
     def update_timestamp(self):
         self.timestamp = datetime.utcnow()
 
+    def to_dict(self):
+        return {
+            'product_id': self.product_id,
+            'price_id': self.id,
+            'timestamp': self.timestamp,
+            'amount': self.amount,
+        }
 
 
 
@@ -129,11 +140,16 @@ class User(db.Model):
     
     def get_subscriptions(self):
         subscriptions_list = []
-        for s in self.subscriptions.all():
+        for s in self.subscriptions.order_by(desc(Subscription.subscription_date)).all():
             if not s.cancelled_date:
                 subscription_dict = s.to_dict()
                 subscriptions_list.append(subscription_dict)
         return subscriptions_list
+    
+    def edit_profile(self, changes):
+        self.username = changes['username']
+        self.email = changes['email']
+        self.phone = changes['phone']
     
     def to_dict(self):
         return {
