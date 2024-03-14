@@ -3,7 +3,7 @@ from ..models import Price, Product
 from ..helpers.web_scrapers import get_product_info_from_url
 from ..helpers.send_notifications import send_notifications
 
-@scheduler.task('interval', id='scrape_products', hours=2, misfire_grace_time=900)
+@scheduler.task('interval', id='scrape_products', hours=1, misfire_grace_time=900)
 def scrape_products():
     with scheduler.app.app_context():
         products = Product.query.all()
@@ -16,4 +16,4 @@ def scrape_products():
                 send_notifications(product, current_price, price)
         db.session.commit()
 
-    print('This job is executed every 2 hours.')
+    print('This job is executed every 1 hour.')

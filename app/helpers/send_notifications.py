@@ -1,8 +1,8 @@
 from app import db
 from flask import render_template
-from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Mail
-from twilio.rest import Client
+# from sendgrid import SendGridAPIClient
+# from sendgrid.helpers.mail import Mail
+# from twilio.rest import Client
 import os
 import ssl
 import smtplib
@@ -10,13 +10,13 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from ..models import Log
 
-TWILIO_ACCOUNT_SID = os.environ['TWILIO_ACCOUNT_SID']
-TWILIO_AUTH_TOKEN = os.environ['TWILIO_AUTH_TOKEN']
-SEND_GRID_API_KEY = os.environ.get('SEND_GRID_API_KEY')
+# TWILIO_ACCOUNT_SID = os.environ['TWILIO_ACCOUNT_SID']
+# TWILIO_AUTH_TOKEN = os.environ['TWILIO_AUTH_TOKEN']
+# SEND_GRID_API_KEY = os.environ.get('SEND_GRID_API_KEY')
 GOOGLE_APP_PASSWORD = os.environ.get('GOOGLE_APP_PASSWORD')
 GOOGLE_EMAIL_SENDER = os.environ.get('GOOGLE_EMAIL_SENDER')
-client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
-sg = SendGridAPIClient(SEND_GRID_API_KEY)
+# client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
+# sg = SendGridAPIClient(SEND_GRID_API_KEY)
 
 
 def send_gmails(subscribers, product, old_price, new_price):
@@ -49,36 +49,36 @@ From ${ old_price } to ${ new_price.amount }."""
             db.session.add(log)
         db.session.commit()
         
-def send_sg_emails(subscribers, product, old_price, new_price):
-    for subscriber in subscribers:
-        message = Mail(
-            from_email=GOOGLE_EMAIL_SENDER,
-            to_emails=subscriber.email,
-            subject='New Price Alert',
-            html_content=render_template(
-                'email_template.html',
-                product=product,
-                old_price=old_price,
-                new_price=new_price.amount
-            )
-        )
-        response = sg.send(message)
-        if response.status_code == 202:
-            log = Log(subscriber.id, new_price.id, 'email')
-            db.session.add(log)
-            db.session.commit()  
+# def send_sg_emails(subscribers, product, old_price, new_price):
+#     for subscriber in subscribers:
+#         message = Mail(
+#             from_email=GOOGLE_EMAIL_SENDER,
+#             to_emails=subscriber.email,
+#             subject='New Price Alert',
+#             html_content=render_template(
+#                 'email_template.html',
+#                 product=product,
+#                 old_price=old_price,
+#                 new_price=new_price.amount
+#             )
+#         )
+#         response = sg.send(message)
+#         if response.status_code == 202:
+#             log = Log(subscriber.id, new_price.id, 'email')
+#             db.session.add(log)
+#             db.session.commit()  
 
-def send_twilio_sms(subscribers, product, old_price, new_price):
-    for subscriber in subscribers:
-        message = client.messages.create(
-            from_='+18559652446',
-            body=f'Hello from NotiFi!\n Your product {product.product_name} has gone {"up" if new_price.amount > old_price else "down"} in price.\nThe old price was : ${old_price} and the new price is ${new_price.amount}',
-            to=f'+1{subscriber.phone}'
-        )
-        if not message.sid.error_code:
-            log = Log(subscriber.id, new_price.id, 'phone')
-            db.session.add(log)
-            db.session.commit()
+# def send_twilio_sms(subscribers, product, old_price, new_price):
+#     for subscriber in subscribers:
+#         message = client.messages.create(
+#             from_='+18559652446',
+#             body=f'Hello from NotiFi!\n Your product {product.product_name} has gone {"up" if new_price.amount > old_price else "down"} in price.\nThe old price was : ${old_price} and the new price is ${new_price.amount}',
+#             to=f'+1{subscriber.phone}'
+#         )
+#         if not message.sid.error_code:
+#             log = Log(subscriber.id, new_price.id, 'phone')
+#             db.session.add(log)
+#             db.session.commit()
         
 def send_notifications(product, old_price, new_price):
     email_list = []
