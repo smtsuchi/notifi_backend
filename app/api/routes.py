@@ -16,6 +16,8 @@ def subscribe():
 
     url = data['url']
     product_details = get_product_info_from_url(url)
+    if product_details.get('status') == 'not ok':
+        return product_details
     product = Product.query.filter_by(url=url).first()
 
     if not product:
@@ -100,18 +102,15 @@ def update_notify_on_drop_only():
 def edit_profile():
     user = get_current_user()
     data = request.json
-    user = User.query.filter_by(email=data['email']).first()
-    if user:
-        return {
-        'status': 'not ok',
-        'message': 'That email is already taken.',
-    }, 400
-    user = User.query.filter_by(phone=data['phone']).first()
-    if user:
-        return {
-        'status': 'not ok',
-        'message': 'That phone number is already taken.',
-    }, 400
+    fields = [('username', User.username), ('email', User.email), ('phone', User.phone)]
+    for field, attr in fields:
+        if getattr(user, field) != data[field]:
+            user = User.query.filter_by(attr==data[field]).first()
+            if user:
+                return {
+                'status': 'not ok',
+                'message': f'That {field if field != 'phone' else 'phone number'} is already taken.',
+            }, 400
     user.edit_profile(data)
     db.session.commit()
     return {

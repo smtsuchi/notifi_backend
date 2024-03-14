@@ -25,11 +25,15 @@ def get_product_info_from_url(url):
 
     description_element = soup.select_one("#productDescription")
     description = description_element.text.strip() if description_element else None
-    print(product_name, price)
+    if product_name and price and url and image:
+        return {
+            'product_name': product_name,
+            'price': price,
+            'url': url,
+            'image_url': image,
+            'description': description,
+        }
     return {
-        'product_name': product_name,
-        'price': price,
-        'url': url,
-        'image_url': image,
-        'description': description,
-    }
+        'status': 'not ok',
+        'message': 'Something went wrong. Try another product.'
+    }, 400
