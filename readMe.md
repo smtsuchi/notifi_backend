@@ -73,3 +73,8 @@ Another challenge I faced was actually notifying the users about the price drop.
 
 - ### Any details on testing performed as part of the project to ensure the project meets the requirements
     - I wrote basic unit tests utilizing Python's unittest framework to ensure the API endpoints function as expected.
+
+## Links to Frontend and Live Demo
+- [Frontend GitHub Repo](https://github.com/smtsuchi/notifi_frontend)
+
+- [Live Demo Hosted on Firebase (backend on Heroku)](https://notifi-4276f.web.app/)
