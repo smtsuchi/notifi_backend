@@ -9,10 +9,8 @@ class Config():
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     JWT_COOKIE_SECURE = True
     JWT_COOKIE_CSRF_PROTECT  = False
-    JWT_TOKEN_LOCATION = ["cookies"]
+    JWT_TOKEN_LOCATION = ["cookies", "headers"]
     JWT_SECRET_KEY = os.environ.get("SECRET_KEY")
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=1)
     JWT_ERROR_MESSAGE_KEY = "message"
     CORS_SUPPORTS_CREDENTIALS=True
-    JWT_ACCESS_COOKIE_NAME = "__session"
-    JWT_COOKIE_DOMAIN=os.environ.get('FRONTEND_URL')
