@@ -15,4 +15,4 @@ class Config():
     JWT_ERROR_MESSAGE_KEY = "message"
     CORS_SUPPORTS_CREDENTIALS=True
     JWT_ACCESS_COOKIE_NAME = "__session"
-    JWT_JSON_KEY = "__session"
+    JWT_COOKIE_DOMAIN=os.environ.get('FRONTEND_URL')
