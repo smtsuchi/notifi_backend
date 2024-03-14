@@ -41,12 +41,13 @@ def signup_user():
 @basic_auth.login_required
 def login_user():
     user = basic_auth.current_user()
+    access_token = create_access_token(identity=user.id)
     response = jsonify({
         'status': 'ok',
         'user': user.to_dict(),
-        'message': "Successfully logged in."
+        'message': "Successfully logged in.",
+        'access_token': access_token
     })
-    access_token = create_access_token(identity=user.id)
     set_access_cookies(response, access_token)
     return response, 200
 
