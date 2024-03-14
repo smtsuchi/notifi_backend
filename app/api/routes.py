@@ -110,7 +110,7 @@ def edit_profile():
             if user:
                 return {
                 'status': 'not ok',
-                'message': f'That {field if field != 'phone' else 'phone number'} is already taken.',
+                'message': f'That {field if field != "phone" else "phone number"} is already taken.',
             }, 400
     user.edit_profile(data)
     db.session.commit()
