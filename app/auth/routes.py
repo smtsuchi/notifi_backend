@@ -25,6 +25,12 @@ def signup_user():
             'status': 'not ok',
             'message': "That email is already in use."
         }, 400
+    user = User.query.filter_by(phone=phone).first()
+    if user:
+        return {
+            'status': 'not ok',
+            'message': "That phone number is already taken."
+        }, 400
 
     user = User(username, password, email, phone)
 
