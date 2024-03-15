@@ -106,8 +106,8 @@ def edit_profile():
     fields = [('username', User.username), ('email', User.email), ('phone', User.phone)]
     for field, attr in fields:
         if getattr(user, field) != data[field]:
-            user = User.query.filter(attr==data[field]).first()
-            if user:
+            found_user = User.query.filter(attr==data[field]).first()
+            if found_user:
                 return {
                 'status': 'not ok',
                 'message': f'That {field if field != "phone" else "phone number"} is already taken.',
