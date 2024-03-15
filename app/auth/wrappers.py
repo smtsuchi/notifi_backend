@@ -4,7 +4,7 @@ from werkzeug.security import check_password_hash
 from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth
 from flask_jwt_extended import get_jwt_identity
 
-basic_auth = HTTPBasicAuth()
+basic_auth = HTTPBasicAuth('Yabasic')
 token_auth = HTTPTokenAuth('Bearer')
 
 @basic_auth.verify_password
