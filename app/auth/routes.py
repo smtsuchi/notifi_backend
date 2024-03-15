@@ -58,11 +58,16 @@ def login_user():
     return response, 200
 
 @auth.post('/logout')
-@jwt_required()
 def logout_user():
-    response = jsonify({
-        'status': 'ok',
-        'message': "Successfully logged out."
-    })
-    unset_jwt_cookies(response)
+    try:
+        response = jsonify({
+            'status': 'ok',
+            'message': "Successfully logged out."
+        })
+        unset_jwt_cookies(response)
+    except:
+        response = jsonify({
+                'status': 'ok',
+                'message': "Successfully logged out."
+            })
     return response, 200
