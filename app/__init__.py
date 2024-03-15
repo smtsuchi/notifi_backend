@@ -17,8 +17,6 @@ scheduler = APScheduler(app=app)
 
 scheduler.start()
 
-
-from . import tokens
 from . import models
 
 from .auth import auth
