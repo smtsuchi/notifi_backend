@@ -8,9 +8,9 @@ from flask_jwt_extended import create_access_token, set_access_cookies, unset_jw
 @auth.post('/signup')
 def signup_user():
     data = request.json
-    username = data['username']
+    username = data['username'].lower()
     password = data['password']
-    email = data.get('email')
+    email = data.get('email').lower()
     phone = data.get('phone')
 
     user = User.query.filter_by(username=username).first()

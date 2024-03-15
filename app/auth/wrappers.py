@@ -9,7 +9,7 @@ token_auth = HTTPTokenAuth('Bearer')
 
 @basic_auth.verify_password
 def verify_password(username, password):
-    user = User.query.filter_by(username=username).first()
+    user = User.query.filter_by(username=username.lower()).first()
     if user:
         if check_password_hash(user.password, password):
             return user
