@@ -16,7 +16,7 @@ def scrape_products():
             current_price = product.get_current_price()
             price = Price(product.id, product_details[0]['price'])
             db.session.add(price)
-            if current_price != product_details['price']:
+            if current_price != product_details[0]['price']:
                 send_notifications(product, current_price, price)
         db.session.commit()
         print("FAILED SCHEDULE:", failed)
