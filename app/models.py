@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from werkzeug.security import generate_password_hash
 from sqlalchemy import asc, desc
 from app import db
@@ -29,7 +29,7 @@ class Subscription(db.Model):
         }
     
     def cancel(self):
-        self.cancelled_date = datetime.now(datetime.UTC)
+        self.cancelled_date = datetime.now(timezone.utc)
 
 class Product(db.Model):
     __tablename__ = 'product'
