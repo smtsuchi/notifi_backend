@@ -14,7 +14,7 @@ def scrape_products():
                 failed.append(product.url)
                 continue
             current_price = product.get_current_price()
-            price = Price(product.id, product_details['price'])
+            price = Price(product.id, product_details[0]['price'])
             db.session.add(price)
             if current_price != product_details['price']:
                 send_notifications(product, current_price, price)
