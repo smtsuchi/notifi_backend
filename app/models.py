@@ -9,7 +9,7 @@ class Subscription(db.Model):
     id = db.Column(db.String, primary_key=True)
     user_id = db.Column(db.String, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
     product_id = db.Column(db.String, db.ForeignKey('product.id', ondelete='CASCADE'), nullable=False)
-    subscription_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
+    subscription_date = db.Column(db.DateTime, nullable=False, default=datetime.now(timezone.utc))
     cancelled_date = db.Column(db.DateTime)
     
     def __init__(self, user_id, product_id):
@@ -38,7 +38,7 @@ class Product(db.Model):
     product_name = db.Column(db.String, nullable=False)
     image_url = db.Column(db.String)
     description = db.Column(db.String)
-    date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
+    date_created = db.Column(db.DateTime, nullable=False, default=datetime.now(timezone.utc))
     last_updated = db.Column(db.DateTime)
     prices = db.relationship("Price", backref='product', lazy='dynamic')
 
@@ -94,7 +94,7 @@ class Price(db.Model):
     __tablename__ = 'price'
     id = db.Column(db.Integer, primary_key=True)
     product_id = db.Column(db.String, db.ForeignKey('product.id', ondelete='CASCADE'), nullable=False)
-    timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
+    timestamp = db.Column(db.DateTime, nullable=False, default=datetime.now(timezone.utc))
     amount = db.Column(db.Numeric)
 
     def __init__(self, product_id, amount):
@@ -102,7 +102,7 @@ class Price(db.Model):
         self.amount = amount
 
     def update_timestamp(self):
-        self.timestamp = datetime.utcnow()
+        self.timestamp = datetime.now(timezone.utc)
 
     def to_dict(self):
         return {
