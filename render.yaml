@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: notifi-backend
+    env: python
+    region: oregon
+    plan: free
+    branch: master
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn run:app"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.13.0
+      - key: FLASK_APP
+        value: run.py
+      - key: FLASK_DEBUG
+        value: False
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        value: sqlite:///notifi.db
+      - key: GOOGLE_APP_PASSWORD
+        sync: false
+      - key: GOOGLE_EMAIL_SENDER
+        sync: false
+      - key: FRONTEND_URL
+        sync: false
