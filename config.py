@@ -6,9 +6,15 @@ class Config():
     FLASK_DEBUG = os.environ.get("FLASK_DEBUG")
     SECRET_KEY = os.environ.get('SECRET_KEY')
 
-    # SQLite database configuration (development)
-    # For production, set DATABASE_URL environment variable to PostgreSQL connection string
-    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL", "sqlite:///notifi.db")
+    # Force SQLite database for all environments
+    # Render auto-sets DATABASE_URL to PostgreSQL, so we ignore it and use SQLite
+    database_url = os.environ.get("DATABASE_URL", "sqlite:///notifi.db")
+
+    # If Render sets a postgres URL, replace it with SQLite
+    if database_url.startswith("postgres://") or database_url.startswith("postgresql://"):
+        database_url = "sqlite:///notifi.db"
+
+    SQLALCHEMY_DATABASE_URI = database_url
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     JWT_COOKIE_SECURE = True
