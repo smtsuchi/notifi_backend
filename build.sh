@@ -5,9 +5,12 @@ set -o errexit
 pip install --upgrade pip
 pip install -r requirements.txt
 
-# Initialize database if it doesn't exist
-if [ ! -f notifi.db ]; then
+# Run database migrations
+# Initialize migrations directory if it doesn't exist
+if [ ! -d "migrations" ]; then
     flask db init
-    flask db migrate -m "Initial migration"
-    flask db upgrade
 fi
+
+# Create and apply migrations
+flask db migrate -m "Auto migration on deployment" || true
+flask db upgrade
